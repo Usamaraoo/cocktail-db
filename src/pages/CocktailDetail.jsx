@@ -1,32 +1,50 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useCocktailGlobalContext } from '../CocktailContext'
 import Loading from '../components/Loading'
+
 export default function CocktailDetail() {
 	let { id } = useParams()
-	const {
-		singleCocktail: {
+	const [singleCocktail, setSingleCocktail] = useState(null)
+	const [loading, setLoading] = useState(true)
+	useEffect(() => {
+		const getSingleCocktail = async (drinkId) => {
+			try {
+				setLoading(true)
+				const res = await fetch(
+					`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${drinkId}`
+				)
+				const data = await res.json()
+				if (data.drinks) {
+					setSingleCocktail(data.drinks[0])
+				}
+				setLoading(false)
+			} catch (error) {
+				console.log(error)
+				setLoading(false)
+			}
+		}
+		getSingleCocktail(id)
+	}, [id])
+	if (loading) {
+		return <Loading />
+	} else if (!singleCocktail) {
+		return (
+			<div className='text-center text-2xl mt-10'>No Cocktail found</div>
+		)
+	} else {
+		const {
 			strDrink,
 			strDrinkThumb,
 			strGlass,
 			strCategory,
-			strInstructions,
 			strIngredient1,
 			strIngredient2,
 			strIngredient3,
-		},
-		loading,
-		getSingleCocktail,
-	} = useCocktailGlobalContext()
-	useEffect(() => {
-		getSingleCocktail(id)
-	}, [id])
+			strInstructions,
+		} = singleCocktail
 
-	return (
-		<div>
-			{loading ? (
-				<Loading />
-			) : (
+		return (
+			<div>
 				<div className='text-center tracking-widest'>
 					<div className='my-10'>
 						<Link
@@ -80,7 +98,7 @@ export default function CocktailDetail() {
 						</div>
 					</div>
 				</div>
-			)}
-		</div>
-	)
+			</div>
+		)
+	}
 }
