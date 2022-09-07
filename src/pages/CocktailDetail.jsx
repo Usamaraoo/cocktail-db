@@ -20,7 +20,7 @@ export default function CocktailDetail() {
 	} = useCocktailGlobalContext()
 	useEffect(() => {
 		getSingleCocktail(id)
-	}, [])
+	}, [id])
 
 	return (
 		<div>

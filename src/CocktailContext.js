@@ -9,30 +9,7 @@ const CocktailProvider = ({ children }) => {
 	const [cocktails, setCocktails] = useState([])
 	const [singleCocktail, setSingleCocktail] = useState({})
 
-	const searchCockTail = async () => {
-		try {
-			setLoading(true)
-
-			fetch(`${url}${searchTerm}`)
-				.then((response) => {
-					if (!response.ok) {
-						throw response
-					}
-					return response.json()
-				})
-				.then((data) => {
-					if (data.drinks) {
-						setCocktails(data.drinks)
-					} else {
-						setCocktails([])
-					}
-					setLoading(false)
-				})
-		} catch (error) {
-			console.log(error)
-			setLoading(false)
-		}
-	}
+	
 	const getSingleCocktail = async (id = 11007) => {
 		try {
 			setLoading(true)
@@ -52,6 +29,30 @@ const CocktailProvider = ({ children }) => {
 		}
 	}
 	useEffect(() => {
+        const searchCockTail = async () => {
+            try {
+                setLoading(true)
+    
+                fetch(`${url}${searchTerm}`)
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw response
+                        }
+                        return response.json()
+                    })
+                    .then((data) => {
+                        if (data.drinks) {
+                            setCocktails(data.drinks)
+                        } else {
+                            setCocktails([])
+                        }
+                        setLoading(false)
+                    })
+            } catch (error) {
+                console.log(error)
+                setLoading(false)
+            }
+        }
 		searchCockTail()
 	}, [searchTerm])
 
